@@ -60,11 +60,11 @@ module Capybara
       @label
     end
 
-    def description(options={})
+    def description(**options)
       @filter_set.description(options)
     end
 
-    def call(locator, options={})
+    def call(locator, **options)
       if format
         # @expression.call(locator, options.select {|k,v| @expression_filters.include?(k)})
         @expression.call(locator, options)
@@ -77,9 +77,8 @@ module Capybara
       @match and @match.call(locator)
     end
 
-    def filter(name, *types_and_options, &block)
-      options = types_and_options.last.is_a?(Hash) ? types_and_options.pop.dup : {}
-      types_and_options.each { |k| options[k] = true}
+    def filter(name, *types, **options, &block)
+      types.each { |k| options[k] = true}
       custom_filters[name] = Filter.new(name, block, options)
     end
 
@@ -97,7 +96,7 @@ module Capybara
 
     private
 
-    def locate_field(xpath, locator, options={})
+    def locate_field(xpath, locator, **options)
       locate_field = xpath
       if locator
         locator = locator.to_s
